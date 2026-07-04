@@ -52,7 +52,7 @@ export { FlashlightCard }
 
 export default function StatsCards({ stats }: { stats: Stats | null }) {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {cards.map((card, i) => {
         const Icon = card.icon
         const value = stats ? (stats as Record<string, unknown>)[card.key] as number ?? 0 : 0

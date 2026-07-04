@@ -83,7 +83,7 @@ export default function App() {
 
       <div className="relative max-w-6xl mx-auto px-5 py-8 space-y-5">
         {/* ── Header ── */}
-        <header className="flex items-center justify-between animate-in">
+        <header className="flex items-center justify-between gap-4 flex-wrap animate-in">
           <div className="flex items-center gap-4">
             {/* Orbit logo */}
             <div className="relative w-12 h-12">
@@ -109,10 +109,10 @@ export default function App() {
           </div>
 
           {searched && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
               <button
                 onClick={handleRefresh}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer hover:bg-white/5"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer hover:bg-white/5 whitespace-nowrap"
                 style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}
               >
                 <RefreshCw size={12} />
@@ -120,7 +120,7 @@ export default function App() {
               </button>
               <a
                 href={exportUrl('csv')}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all no-underline hover:bg-white/5"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all no-underline hover:bg-white/5 whitespace-nowrap"
                 style={{ color: 'var(--emerald)', border: '1px solid rgba(52, 211, 153, 0.2)' }}
               >
                 <Download size={12} />
@@ -128,7 +128,7 @@ export default function App() {
               </a>
               <a
                 href={exportUrl('excel')}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all no-underline hover:bg-white/5"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs transition-all no-underline hover:bg-white/5 whitespace-nowrap"
                 style={{ color: 'var(--violet)', border: '1px solid rgba(139, 92, 246, 0.2)' }}
               >
                 <FileSpreadsheet size={12} />

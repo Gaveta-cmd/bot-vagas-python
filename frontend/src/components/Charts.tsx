@@ -38,7 +38,7 @@ export default function Charts({ stats }: { stats: Stats | null }) {
     .map(([name, value]) => ({ name: name.length > 14 ? name.slice(0, 12) + '...' : name, value }))
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {/* Vagas por Tecnologia */}
       <FlashlightCard className="p-5 animate-in delay-1">
         <div className="relative z-10">
