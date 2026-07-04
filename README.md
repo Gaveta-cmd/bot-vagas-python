@@ -1,31 +1,85 @@
 # Bot de Vagas 🔍
 
-Cansado de ficar abrindo 10 sites diferentes pra procurar vaga? Esse script resolve isso. Ele bate em algumas APIs públicas, puxa as vagas, filtra o que não interessa e salva tudo num CSV organizado.
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0-000000?logo=flask&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 
-Feito pra uso pessoal mas funciona bem como base pra quem quiser expandir.
+Coleta automatizada de vagas de emprego em tecnologia com dashboard web interativo. Busca em múltiplas APIs públicas, filtra por critérios customizados e exibe tudo num dashboard com gráficos e exportação.
 
 ---
 
-## O que faz
+## Screenshots
 
-- Busca vagas por tecnologia (python, react, javascript, data science, etc)
-- Puxa de várias fontes ao mesmo tempo: RemoteOK, Jobicy, Arbeitnow
-- Remove vagas duplicadas automaticamente
-- Filtra por localização, remoto, senioridade, salário
-- Salva tudo em CSV pra você abrir no Excel/Sheets se quiser
-- Mostra um resumo no terminal com estatísticas
+### Dashboard — Lista de Vagas
+![Vault Dashboard](docs/screenshots/dashboard-vagas.png)
+
+### Gráficos e Métricas
+![Audit Log](docs/screenshots/dashboard-graficos.png)
+
+---
+
+## Funcionalidades
+
+| Feature | Descrição |
+|---------|-----------|
+| Busca multi-fonte | RemoteOK, Jobicy, Arbeitnow em paralelo |
+| Filtros avançados | Tecnologia, senioridade, localização, salário, tipo |
+| Dashboard web | Interface dark com stats cards, tabela e gráficos |
+| Gráficos interativos | Por tecnologia, fonte, salário médio, localização |
+| Exportação CSV/Excel | Download direto pelo dashboard |
+| Deduplicação inteligente | Por ID e por título+empresa (cross-source) |
+| Cache de resultados | 5 min de cache para evitar chamadas repetidas |
+| Paginação | Navegação por páginas na tabela de vagas |
+| CLI completo | Script de demo com 5 demonstrações |
+
+## Stack Técnica
+
+| Camada | Tecnologia |
+|--------|------------|
+| Scraping | Python + requests |
+| Dados | pandas + DataFrame |
+| Backend API | Flask + Flask-CORS |
+| Frontend | React 19 + TypeScript |
+| Build | Vite 8 |
+| Estilos | Tailwind CSS 4 |
+| Gráficos | Recharts |
+| Ícones | Lucide React |
+| Export | openpyxl (Excel) + CSV nativo |
 
 ## Instalação
 
-Precisa de Python 3.10+ e basicamente só duas libs:
+### Backend
 
 ```bash
+# Python 3.10+
 pip install -r requirements.txt
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
 ```
 
 ## Como usar
 
-Jeito mais rápido, só rodar o demo que já testa tudo:
+### Dashboard Web (recomendado)
+
+```bash
+# Terminal 1 — Backend
+python backend/app.py
+
+# Terminal 2 — Frontend
+cd frontend
+npm run dev
+```
+
+Acesse `http://localhost:5175` no navegador.
+
+### CLI (modo terminal)
 
 ```bash
 python run_demo.py
@@ -36,45 +90,66 @@ Ou importar no seu próprio script:
 ```python
 from job_bot import fetch_jobs, clean_jobs, filter_jobs, save_jobs, display_jobs
 
-# buscar vagas de python e react
 df = fetch_jobs(["python", "react"], sources=["remoteok", "jobicy"])
 df = clean_jobs(df)
-
-# filtrar só as remotas com salário acima de 80k
 df = filter_jobs(df, remote_only=True, min_salary=80_000)
 
 display_jobs(df, top_n=10)
 save_jobs(df, filename="minhas_vagas")
 ```
 
-Os CSVs ficam salvos na pasta `data/`.
+## API REST
 
-## Filtros disponíveis
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/api/jobs` | Busca vagas com filtros e paginação |
+| GET | `/api/stats` | Estatísticas e métricas agregadas |
+| GET | `/api/export/csv` | Download CSV das vagas |
+| GET | `/api/export/excel` | Download Excel das vagas |
+| POST | `/api/refresh` | Limpa cache e força nova coleta |
 
-```python
-filter_jobs(
-    df,
-    keywords=["senior", "backend"],   # palavras no título/descrição
-    exclude_keywords=["intern"],       # excluir essas palavras
-    remote_only=True,                  # só remoto
-    location="brazil",                 # filtrar por localização
-    job_type="full-time",
-    min_salary=60_000,                 # salário mínimo (USD/ano)
-    max_salary=150_000,
-)
+### Parâmetros de `/api/jobs`
+
+| Parâmetro | Tipo | Exemplo |
+|-----------|------|---------|
+| `technologies` | string | `python,react,devops` |
+| `keywords` | string | `senior,lead` |
+| `location` | string | `brazil` |
+| `remote_only` | bool | `true` |
+| `job_type` | string | `full-time` |
+| `exclude_keywords` | string | `intern,trainee` |
+| `min_salary` | float | `60000` |
+| `max_salary` | float | `200000` |
+| `page` | int | `1` |
+| `per_page` | int | `15` |
+
+## Estrutura
+
+```
+bot-vagas-python/
+├── job_bot.py            # Core: scraping, limpeza, filtros, relatórios
+├── config.py             # Configurações customizáveis
+├── run_demo.py           # Demo CLI com 5 demonstrações
+├── requirements.txt      # Dependências Python
+├── backend/
+│   └── app.py            # Flask API (5 endpoints)
+├── frontend/
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── package.json
+│   └── src/
+│       ├── App.tsx           # Dashboard principal
+│       ├── index.css         # Tema dark + glass morphism
+│       ├── types.ts          # Tipos TypeScript
+│       └── components/
+│           ├── StatsCards.tsx     # Cards animados
+│           ├── FiltersPanel.tsx   # Painel de filtros
+│           ├── JobsTable.tsx      # Tabela paginada
+│           └── Charts.tsx        # Gráficos Recharts
+└── data/                 # CSVs gerados (git ignored)
 ```
 
-## Configuração
-
-Edita o `config.py` pra mudar as tecnologias padrão, fontes, limite de vagas e filtros.
-
-```python
-DEFAULT_TECHNOLOGIES = ["python", "javascript", "react", "data-science"]
-DEFAULT_SOURCES = ["remoteok", "jobicy"]
-MAX_JOBS_PER_SOURCE = 30
-```
-
-## Fontes
+## Fontes de Dados
 
 | Fonte | Tipo | API Key? |
 |-------|------|----------|
@@ -84,21 +159,12 @@ MAX_JOBS_PER_SOURCE = 30
 
 Todas públicas, sem precisar cadastrar nada.
 
-## Estrutura
-
-```
-├── job_bot.py       # funções principais
-├── config.py        # configurações
-├── run_demo.py      # script de exemplo
-├── requirements.txt
-└── data/            # CSVs gerados (ignorado pelo git)
-```
-
 ## Observações
 
-- A API do RemoteOK tem rate limit, então o script já tem um delay entre as requisições. Se aparecer erro 429 é só esperar alguns minutos.
-- O campo de salário nem sempre vem preenchido, depende da vaga. Quando vem, está em USD/ano.
-- A Jobicy às vezes fica instável, o script trata isso graciosamente e segue.
+- A API do RemoteOK tem rate limit, o script já tem delay entre requisições. Erro 429 = esperar alguns minutos.
+- O campo de salário nem sempre vem preenchido. Quando vem, está em USD/ano.
+- A primeira busca demora ~15-20s (6 chamadas de API com delay). Buscas seguintes usam cache de 5 min.
+- A Jobicy às vezes fica instável, o script trata isso graciosamente.
 
 ---
 

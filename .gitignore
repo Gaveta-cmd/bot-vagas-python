@@ -10,3 +10,6 @@ dist/
 build/
 .idea/
 .vscode/
+node_modules/
+frontend/dist/
+.claude/
